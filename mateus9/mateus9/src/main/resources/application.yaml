@@ -1,0 +1,52 @@
+
+spring:
+  application:
+    name: mateus9
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username:
+    password:
+    virtual-host: /
+
+   ## não sabia como podia configurar o retry então pedi pra IA me guiar (vou estudar mais depois pra entender como funciona exatamente)
+    listener:
+      simple:
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+
+
+        retry:
+          enabled: true
+          max-retries: 2
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 5000ms
+
+app:
+  rabbitmq:
+    exchange: pagamento-exchange
+    queue: pagamento-queue
+    routing-key: pagamento-aprovado
+
+    dlx:
+      exchange: pagamento-dlx
+
+    dlq:
+      queue: pagamento-dlq
+      routing-key: pagamento-dlq-queue
